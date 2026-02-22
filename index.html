@@ -1,0 +1,70 @@
+  `<!DOCTYPE html>
+<html>
+<head>
+  <title>Discord Incremental Tracker - Updated Formulas</title>
+  <style>
+    body { font-family: sans-serif; margin: 2rem; background: #f0f0f0; }
+    .card { background: white; padding: 1rem; margin-bottom: 1rem; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
+    input { width: 60px; margin-left: 0.5rem; }
+    label { font-weight: bold; }
+  </style>
+</head>
+<body>
+  <h1>Discord Incremental Tracker</h1>
+
+  <div class="card">
+    <h2>Update Stats</h2>
+    <p>Messages: <input type="number" id="inputMessages" value="15000"></p>
+    <p>Tutol Players: <input type="number" id="inputPlayers" value="30"></p>
+    <p>:lime~1: Reactions: <input type="number" id="inputReactions" value="1"></p>
+  </div>
+
+  <div class="card">
+    <h2>Edit Formulas</h2>
+    <p><label>XP Multiplier (7.2):</label> <input type="number" id="xpMultiplier" value="14.4" step="0.1"></p>
+    <p><label>XP Exponent (1/1.6):</label> <input type="number" id="xpExponent" value="0.625" step="0.001"></p>
+    <p><label>Reaction Score Multiplier (1140):</label> <input type="number" id="reactionMultiplier" value="57000" step="1"></p>
+  </div>
+
+  <div class="card">
+    <h2>Current Stats</h2>
+    <p>Messages: <span id="messages">0</span></p>
+    <p>Tutol Players: <span id="players">0</span></p>
+    <p>A (Tutol Boost): <span id="A">0</span></p>
+    <p>XP: <span id="xp">0</span></p>
+    <p>Total :lime~1: Reactions: <span id="reactions">0</span></p>
+    <p>Total Score: <span id="totalScore">0</span></p>
+  </div>
+
+  <button onclick="updateStats()">Recalculate</button>
+
+  <script>
+    function calculateStats(messages, players, reactions, xpMult, xpExp, reactionMult) {
+      let A = Math.log(players) / Math.log(2); // Tutol boost
+      let XP = A * xpMult * Math.pow(messages, xpExp); // new XP formula
+      let totalScore = reactions * reactionMult * XP * A; // reaction score
+
+      document.getElementById('messages').textContent = messages;
+      document.getElementById('players').textContent = players;
+      document.getElementById('A').textContent = A.toFixed(2);
+      document.getElementById('xp').textContent = XP.toFixed(2);
+      document.getElementById('reactions').textContent = reactions;
+      document.getElementById('totalScore').textContent = totalScore.toFixed(0);
+    }
+
+    function updateStats() {
+      let messages = parseInt(document.getElementById('inputMessages').value) || 0;
+      let players = parseInt(document.getElementById('inputPlayers').value) || 0;
+      let reactions = parseInt(document.getElementById('inputReactions').value) || 0;
+      let xpMult = parseFloat(document.getElementById('xpMultiplier').value) || 7.2;
+      let xpExp = parseFloat(document.getElementById('xpExponent').value) || 0.625;
+      let reactionMult = parseFloat(document.getElementById('reactionMultiplier').value) || 1140;
+
+      calculateStats(messages, players, reactions, xpMult, xpExp, reactionMult);
+    }
+
+    updateStats();
+  </script>
+</body>
+
+</html>
