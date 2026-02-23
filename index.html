@@ -3,7 +3,7 @@
 <head>
   <title>Discord Incremental Tracker - Updated Formulas</title>
   <style>
-    body { font-family: sans-serif; margin: 2rem; background: #f0f0f0; }
+    body { font-family: verdana; margin: 2rem; background: #f0f0f0; }
     .card { background: white; padding: 1rem; margin-bottom: 1rem; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
     input { width: 60px; margin-left: 0.5rem; }
     label { font-weight: bold; }
@@ -54,12 +54,12 @@
 
       let totalScore = boostedReactions * reactionMult * XP * A;
 
-      document.getElementById('messages').textContent = messages;
-      document.getElementById('players').textContent = players;
-      document.getElementById('A').textContent = A.toFixed(2);
-      document.getElementById('xp').textContent = XP.toFixed(2);
-      document.getElementById('reactions').textContent = reactions;
-      document.getElementById('totalScore').textContent = totalScore.toFixed(0);
+      document.getElementById('messages').textContent = formatLargeNumber(messages);
+      document.getElementById('players').textContent = formatLargeNumber(players);
+      document.getElementById('A').textContent = formatLargeNumber(A, 2);
+      document.getElementById('xp').textContent = formatLargeNumber(XP, 2);
+      document.getElementById('reactions').textContent = formatLargeNumber(reactions);
+      document.getElementById('totalScore').textContent = formatLargeNumber(totalScore, 2);
     }
 
     function updateStats() {
@@ -74,6 +74,19 @@
     }
 
     updateStats();
+
+    function formatLargeNumber(value, places) {
+      const suffixes = ["", "K", "M", "B", "T", "Qa", "Qn", "Sx", "Sp", "Oc", "No", "De"];
+      const magnitudes = [1, 1e3, 1e6, 1e9, 1e12, 1e15, 1e18, 1e21, 1e24, 1e27, 1e30, 1e33]; 
+
+      let i = 0;
+      while (i < magnitudes.length - 1 && value >= magnitudes[i + 1]) {
+        i++;
+      }
+      const scaledValue = value / magnitudes[i];
+      const formattedValue = scaledValue % 1 === 0 ? scaledValue : scaledValue.toFixed(places); 
+      return formattedValue + suffixes[i];
+    }
   </script>
 </body>
 </html>
