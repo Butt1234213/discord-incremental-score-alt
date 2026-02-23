@@ -1,4 +1,4 @@
-  `<!DOCTYPE html>
+<!DOCTYPE html>
 <html>
 <head>
   <title>Discord Incremental Tracker - Updated Formulas</title>
@@ -7,6 +7,7 @@
     .card { background: white; padding: 1rem; margin-bottom: 1rem; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
     input { width: 60px; margin-left: 0.5rem; }
     label { font-weight: bold; }
+    .tiny-multiplier { font-size: 0.75rem; color: #999; margin-left: 4px; }
   </style>
 </head>
 <body>
@@ -14,16 +15,20 @@
 
   <div class="card">
     <h2>Update Stats</h2>
-    <p>Messages: <input type="number" id="inputMessages" value="15000"></p>
+    <p>Messages: <input type="number" id="inputMessages" value="20000"></p>
     <p>Tutol Players: <input type="number" id="inputPlayers" value="30"></p>
-    <p>:lime~1: Reactions: <input type="number" id="inputReactions" value="1"></p>
+    <p>
+      :lime~1: Reactions:
+      <input type="number" id="inputReactions" value="1">
+      <span class="tiny-multiplier">1.2x</span>
+    </p>
   </div>
 
   <div class="card">
     <h2>Edit Formulas</h2>
-    <p><label>XP Multiplier (7.2):</label> <input type="number" id="xpMultiplier" value="14.4" step="0.1"></p>
+    <p><label>XP Multiplier (1283):</label> <input type="number" id="xpMultiplier" value="1283" step="0.1"></p>
     <p><label>XP Exponent (1/1.6):</label> <input type="number" id="xpExponent" value="0.625" step="0.001"></p>
-    <p><label>Reaction Score Multiplier (1140):</label> <input type="number" id="reactionMultiplier" value="57000" step="1"></p>
+    <p><label>Reaction Score Multiplier (102600):</label> <input type="number" id="reactionMultiplier" value="102600" step="1"></p>
   </div>
 
   <div class="card">
@@ -40,9 +45,14 @@
 
   <script>
     function calculateStats(messages, players, reactions, xpMult, xpExp, reactionMult) {
-      let A = Math.log(players) / Math.log(2); // Tutol boost
-      let XP = A * xpMult * Math.pow(messages, xpExp); // new XP formula
-      let totalScore = reactions * reactionMult * XP * A; // reaction score
+      let A = players > 0 ? Math.log(players) / Math.log(2) : 0;
+
+      let XP = A * xpMult * Math.pow(messages, xpExp);
+
+      // Apply 1.2x ONLY to the reactions portion
+      let boostedReactions = reactions * 1.2;
+
+      let totalScore = boostedReactions * reactionMult * XP * A;
 
       document.getElementById('messages').textContent = messages;
       document.getElementById('players').textContent = players;
@@ -56,9 +66,9 @@
       let messages = parseInt(document.getElementById('inputMessages').value) || 0;
       let players = parseInt(document.getElementById('inputPlayers').value) || 0;
       let reactions = parseInt(document.getElementById('inputReactions').value) || 0;
-      let xpMult = parseFloat(document.getElementById('xpMultiplier').value) || 7.2;
+      let xpMult = parseFloat(document.getElementById('xpMultiplier').value) || 1283;
       let xpExp = parseFloat(document.getElementById('xpExponent').value) || 0.625;
-      let reactionMult = parseFloat(document.getElementById('reactionMultiplier').value) || 1140;
+      let reactionMult = parseFloat(document.getElementById('reactionMultiplier').value) || 102600;
 
       calculateStats(messages, players, reactions, xpMult, xpExp, reactionMult);
     }
@@ -66,5 +76,4 @@
     updateStats();
   </script>
 </body>
-
 </html>
