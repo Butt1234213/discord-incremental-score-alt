@@ -1,92 +1,102 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <title>Discord Incremental Tracker - Updated Formulas</title>
-  <style>
-    body { font-family: verdana; margin: 2rem; background: #f0f0f0; }
-    .card { background: white; padding: 1rem; margin-bottom: 1rem; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
-    input { width: 60px; margin-left: 0.5rem; }
-    label { font-weight: bold; }
-    .tiny-multiplier { font-size: 0.75rem; color: #999; margin-left: 4px; }
-  </style>
-</head>
-<body>
-  <h1>Discord Incremental Tracker</h1>
+  <head>
+    <meta charset="UTF-8">
+    <title>boom</title>
+    <style>
+      body { font-family: verdana; margin: 2rem; background: #f0f0f0; }
+      .card { background: white; padding: 1rem; margin-bottom: 1rem; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
+      input { width: 60px; margin-left: 0.5rem; }
+      label { font-weight: bold; }
+      .tiny-multiplier { font-size: 0.75rem; color: #999; margin-left: 4px; }
+    </style>
+  </head>
+  <body>
+    <h1>smeh8's Discord Incremental Tracker</h1>
 
-  <div class="card">
-    <h2>Update Stats</h2>
-    <p>Messages: <input type="number" id="inputMessages" value="20000"></p>
-    <p>Tutol Players: <input type="number" id="inputPlayers" value="30"></p>
-    <p>
-      :lime~1: Reactions:
-      <input type="number" id="inputReactions" value="1">
-      <span class="tiny-multiplier">1.2x</span>
-    </p>
-  </div>
+    <div class="card">
+      <h2>Current Formulas</h2>
+      <p>
+        <img src="https://cdn.discordapp.com/emojis/1129941983272648844.webp" alt=":lime~1:" style="width: 32px; height: 32px;">
+        reactions
+      </p>
+    </div>
 
-  <div class="card">
-    <h2>Edit Formulas</h2>
-    <p><label>XP Multiplier (1283):</label> <input type="number" id="xpMultiplier" value="1283" step="0.1"></p>
-    <p><label>XP Exponent (1/1.6):</label> <input type="number" id="xpExponent" value="0.625" step="0.001"></p>
-    <p><label>Reaction Score Multiplier (102600):</label> <input type="number" id="reactionMultiplier" value="102600" step="1"></p>
-  </div>
+    <div class="card">
+      <h2>Update Stats</h2>
+      <p>Messages: <input type="number" id="inputMessages" value="20000"></p>
+      <p>Tutol Players: <input type="number" id="inputPlayers" value="30"></p>
+      <p>
+        :lime~1: Reactions:
+        <input type="number" id="inputReactions" value="1">
+        <span class="tiny-multiplier">1.2x</span>
+      </p>
+    </div>
 
-  <div class="card">
-    <h2>Current Stats</h2>
-    <p>Messages: <span id="messages">0</span></p>
-    <p>Tutol Players: <span id="players">0</span></p>
-    <p>A (Tutol Boost): <span id="A">0</span></p>
-    <p>XP: <span id="xp">0</span></p>
-    <p>Total :lime~1: Reactions: <span id="reactions">0</span></p>
-    <p>Total Score: <span id="totalScore">0</span></p>
-  </div>
+    <div class="card">
+      <h2>Edit Formulas</h2>
+      <p><label>XP Multiplier (1283):</label> <input type="number" id="xpMultiplier" value="1283" step="0.1"></p>
+      <p><label>XP Exponent (1/1.6):</label> <input type="number" id="xpExponent" value="0.625" step="0.001"></p>
+      <p><label>Reaction Score Multiplier (102600):</label> <input type="number" id="reactionMultiplier" value="102600" step="1"></p>
+    </div>
 
-  <button onclick="updateStats()">Recalculate</button>
+    <div class="card">
+      <h2>Current Stats</h2>
+      <p>Messages: <span id="messages">0</span></p>
+      <p>Tutol Players: <span id="players">0</span></p>
+      <p>A (Tutol Boost): <span id="A">0</span></p>
+      <p>XP: <span id="xp">0</span></p>
+      <p>Total :lime~1: Reactions: <span id="reactions">0</span></p>
+      <p>Total Score: <span id="totalScore">0</span></p>
+    </div>
 
-  <script>
-    function calculateStats(messages, players, reactions, xpMult, xpExp, reactionMult) {
-      let A = players > 0 ? Math.log(players) / Math.log(2) : 0;
+    <button onclick="updateStats()">Recalculate</button>
 
-      let XP = A * xpMult * Math.pow(messages, xpExp);
+    <script src="https://cdn.jsdelivr.net/npm/break_eternity.js@2.1.2"></script>
+    <script>
+      function calculateStats(messages, players, reactions, xpMult, xpExp, reactionMult) {
+        let A = players > 0 ? Math.log(players) / Math.log(2) : 0;
 
-      // Apply 1.2x ONLY to the reactions portion
-      let boostedReactions = reactions * 1.2;
+        let XP = A * xpMult * Math.pow(messages, xpExp);
 
-      let totalScore = boostedReactions * reactionMult * XP * A;
+        // Apply 1.2x ONLY to the reactions portion
+        let boostedReactions = reactions * 1.2;
 
-      document.getElementById('messages').textContent = formatLargeNumber(messages);
-      document.getElementById('players').textContent = formatLargeNumber(players);
-      document.getElementById('A').textContent = formatLargeNumber(A, 2);
-      document.getElementById('xp').textContent = formatLargeNumber(XP, 2);
-      document.getElementById('reactions').textContent = formatLargeNumber(reactions);
-      document.getElementById('totalScore').textContent = formatLargeNumber(totalScore, 2);
-    }
+        let totalScore = boostedReactions * reactionMult * XP * A;
 
-    function updateStats() {
-      let messages = parseInt(document.getElementById('inputMessages').value) || 0;
-      let players = parseInt(document.getElementById('inputPlayers').value) || 0;
-      let reactions = parseInt(document.getElementById('inputReactions').value) || 0;
-      let xpMult = parseFloat(document.getElementById('xpMultiplier').value) || 1283;
-      let xpExp = parseFloat(document.getElementById('xpExponent').value) || 0.625;
-      let reactionMult = parseFloat(document.getElementById('reactionMultiplier').value) || 102600;
-
-      calculateStats(messages, players, reactions, xpMult, xpExp, reactionMult);
-    }
-
-    updateStats();
-
-    function formatLargeNumber(value, places) {
-      const suffixes = ["", "K", "M", "B", "T", "Qa", "Qn", "Sx", "Sp", "Oc", "No", "De"];
-      const magnitudes = [1, 1e3, 1e6, 1e9, 1e12, 1e15, 1e18, 1e21, 1e24, 1e27, 1e30, 1e33]; 
-
-      let i = 0;
-      while (i < magnitudes.length - 1 && value >= magnitudes[i + 1]) {
-        i++;
+        document.getElementById('messages').textContent = formatLargeNumber(messages);
+        document.getElementById('players').textContent = formatLargeNumber(players);
+        document.getElementById('A').textContent = formatLargeNumber(A, 2);
+        document.getElementById('xp').textContent = formatLargeNumber(XP, 2);
+        document.getElementById('reactions').textContent = formatLargeNumber(reactions);
+        document.getElementById('totalScore').textContent = formatLargeNumber(totalScore, 2);
       }
-      const scaledValue = value / magnitudes[i];
-      const formattedValue = scaledValue % 1 === 0 ? scaledValue : scaledValue.toFixed(places); 
-      return formattedValue + suffixes[i];
-    }
-  </script>
-</body>
+
+      function updateStats() {
+        let messages = parseInt(document.getElementById('inputMessages').value) || 0;
+        let players = parseInt(document.getElementById('inputPlayers').value) || 0;
+        let reactions = parseInt(document.getElementById('inputReactions').value) || 0;
+        let xpMult = parseFloat(document.getElementById('xpMultiplier').value) || 1283;
+        let xpExp = parseFloat(document.getElementById('xpExponent').value) || 0.625;
+        let reactionMult = parseFloat(document.getElementById('reactionMultiplier').value) || 102600;
+
+        calculateStats(messages, players, reactions, xpMult, xpExp, reactionMult);
+      }
+
+      updateStats();
+
+      function formatLargeNumber(value, places) {
+        const suffixes = ["", "K", "M", "B", "T", "Qa", "Qn", "Sx", "Sp", "Oc", "No", "De"];
+        const magnitudes = [1, 1e3, 1e6, 1e9, 1e12, 1e15, 1e18, 1e21, 1e24, 1e27, 1e30, 1e33]; 
+
+        let i = 0;
+        while (i < magnitudes.length - 1 && value >= magnitudes[i + 1]) {
+          i++;
+        }
+        const scaledValue = value / magnitudes[i];
+        const formattedValue = scaledValue % 1 === 0 ? scaledValue : scaledValue.toFixed(places); 
+        return formattedValue + suffixes[i];
+      }
+    </script>
+  </body>
 </html>
